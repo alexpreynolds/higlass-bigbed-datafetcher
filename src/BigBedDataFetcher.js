@@ -77,6 +77,8 @@ const BigBedDataFetcher = function BigBedDataFetcher(HGC, ...args) {
       this.dataConfig = dataConfig;
       this.trackUid = slugid.nice();
       this.bigBedFile = null;
+      this.autoSql = null;
+      this.parser = null;
       this.TILE_SIZE = 1024;
 
       this.errorTxt = "";
@@ -101,11 +103,13 @@ const BigBedDataFetcher = function BigBedDataFetcher(HGC, ...args) {
       return null;
     }
 
-    loadBigBed(dataConfig) {
+    async loadBigBed(dataConfig) {
       if (dataConfig.url) {
         this.bigBedFile = new BigBed({
           filehandle: new RemoteFile(dataConfig.url),
         });
+        this.autoSql = await this.bigBedFile.getHeader();
+        this.parser = new BED({ autoSql: this.autoSql });
         return this.bigBedFile;
       } else {
         console.error('Please enter a "url" field to the data config');
@@ -219,6 +223,12 @@ const BigBedDataFetcher = function BigBedDataFetcher(HGC, ...args) {
               // fetch from the start until the end of the chromosome
               startPos = minX - chromStart;
               endPos = chromEnd - chromStart;
+              const feats = await this.bigBedFile.getFeatures(chromName, startPos, endPos);
+              const lines = feats.map(f => {
+                const { start, end, rest, uniqueId } = f;
+                return parser.parseLine(`${chromName}\t${start}\t${end}\t${rest}`, { uniqueId });
+              });
+              console.log(`lines ${JSON.stringify(lines)}`);
               // await this.tabixFile.getLines(chromName, startPos, endPos, (line, fileOffset) => {
               //   const fields = line.split('\t');
               //   tileObjs.push({
@@ -232,9 +242,16 @@ const BigBedDataFetcher = function BigBedDataFetcher(HGC, ...args) {
               //   });
               // });
               minX = chromEnd;
-            } else {
+            } 
+            else {
               startPos = Math.floor(minX - chromStart);
               endPos = Math.ceil(maxX - chromStart);
+              const feats = await this.bigBedFile.getFeatures(chromName, startPos, endPos);
+              const lines = feats.map(f => {
+                const { start, end, rest, uniqueId } = f;
+                return parser.parseLine(`${chromName}\t${start}\t${end}\t${rest}`, { uniqueId });
+              });
+              console.log(`lines ${JSON.stringify(lines)}`);
               // await this.tabixFile.getLines(chromName, startPos, endPos, (line, fileOffset) => {
               //   const fields = line.split('\t');
               //   tileObjs.push({

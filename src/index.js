@@ -1,1 +1,1 @@
-export { default as TabixDataFetcher } from "./TabixDataFetcher";
+export { default as BigBedDataFetcher } from "./BigBedDataFetcher";
