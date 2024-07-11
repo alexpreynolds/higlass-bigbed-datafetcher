@@ -1,6 +1,5 @@
 import slugid from "slugid";
 import { BigBed } from '@gmod/bbi'
-import BED from '@gmod/bed'
 import { RemoteFile } from "apr144-generic-filehandle";
 import { tsvParseRows } from "d3-dsv";
 import { text } from "d3-request";
@@ -77,8 +76,6 @@ const BigBedDataFetcher = function BigBedDataFetcher(HGC, ...args) {
       this.dataConfig = dataConfig;
       this.trackUid = slugid.nice();
       this.bigBedFile = null;
-      this.autoSql = null;
-      this.parser = null;
       this.TILE_SIZE = 1024;
 
       this.errorTxt = "";
@@ -108,8 +105,6 @@ const BigBedDataFetcher = function BigBedDataFetcher(HGC, ...args) {
         this.bigBedFile = new BigBed({
           filehandle: new RemoteFile(dataConfig.url),
         });
-        this.autoSql = await this.bigBedFile.getHeader();
-        this.parser = new BED({ autoSql: this.autoSql });
         return this.bigBedFile;
       } else {
         console.error('Please enter a "url" field to the data config');
@@ -158,6 +153,7 @@ const BigBedDataFetcher = function BigBedDataFetcher(HGC, ...args) {
     }
 
     async fetchTilesDebounced(receivedTiles, tileIds) {
+      // console.log(`fetchTilesDebounced ${tileIds}`);
       const tiles = {};
 
       const validTileIds = [];
@@ -195,10 +191,12 @@ const BigBedDataFetcher = function BigBedDataFetcher(HGC, ...args) {
 
         const tile = {
           tilePos: [x],
-          tileId: "tabix." + z + "." + x,
-          // tileId: z + "." + x,
+          // tileId: "bigbed." + z + "." + x,
+          tileId: z + "." + x,
           zoomLevel: z,
         };
+
+        // console.log(`setting up tile ${tile.tileId}`);
 
         // get the bounds of the tile
         const minXOriginal = tsInfo.min_pos[0] + x * tileWidth;
@@ -226,21 +224,19 @@ const BigBedDataFetcher = function BigBedDataFetcher(HGC, ...args) {
               const feats = await this.bigBedFile.getFeatures(chromName, startPos, endPos);
               const lines = feats.map(f => {
                 const { start, end, rest, uniqueId } = f;
-                return parser.parseLine(`${chromName}\t${start}\t${end}\t${rest}`, { uniqueId });
+                const fieldsRegion = [chromName, start, end];
+                const fieldsRest = rest.split('\t');
+                const fields = [...fieldsRegion, ...fieldsRest];
+                const importance = fields.length >= 5 ? parseFloat(fields[4], 10) : 0.0;
+                tileObjs.push({
+                  xStart: chromStart + parseInt(fields[1], 10),
+                  xEnd: chromStart + parseInt(fields[2], 10),
+                  chrOffset: chromStart,
+                  importance: importance,
+                  uid: uniqueId, // slugid.nice(),
+                  fields: fields,
+                });
               });
-              console.log(`lines ${JSON.stringify(lines)}`);
-              // await this.tabixFile.getLines(chromName, startPos, endPos, (line, fileOffset) => {
-              //   const fields = line.split('\t');
-              //   tileObjs.push({
-              //     xStart: chromStart + parseInt(fields[1], 10),
-              //     xEnd: chromStart + parseInt(fields[2], 10),
-              //     chrOffset: chromStart,
-              //     importance: parseFloat(fields[4], 10),
-              //     uid: slugid.nice(),
-              //     fields: fields,
-              //     transcriptId: `${fields[7]}_${fields[0]}_${fields[1]}_${fields[2]}`,
-              //   });
-              // });
               minX = chromEnd;
             } 
             else {
@@ -249,21 +245,19 @@ const BigBedDataFetcher = function BigBedDataFetcher(HGC, ...args) {
               const feats = await this.bigBedFile.getFeatures(chromName, startPos, endPos);
               const lines = feats.map(f => {
                 const { start, end, rest, uniqueId } = f;
-                return parser.parseLine(`${chromName}\t${start}\t${end}\t${rest}`, { uniqueId });
+                const fieldsRegion = [chromName, start, end];
+                const fieldsRest = rest.split('\t');
+                const fields = [...fieldsRegion, ...fieldsRest];
+                const importance = fields.length >= 5 ? parseFloat(fields[4], 10) : 0.0;
+                tileObjs.push({
+                  xStart: chromStart + parseInt(fields[1], 10),
+                  xEnd: chromStart + parseInt(fields[2], 10),
+                  chrOffset: chromStart,
+                  importance: importance,
+                  uid: uniqueId, // slugid.nice(),
+                  fields: fields,
+                });
               });
-              console.log(`lines ${JSON.stringify(lines)}`);
-              // await this.tabixFile.getLines(chromName, startPos, endPos, (line, fileOffset) => {
-              //   const fields = line.split('\t');
-              //   tileObjs.push({
-              //     xStart: chromStart + parseInt(fields[1], 10),
-              //     xEnd: chromStart + parseInt(fields[2], 10),
-              //     chrOffset: chromStart,
-              //     importance: parseFloat(fields[4], 10),
-              //     uid: slugid.nice(),
-              //     fields: fields,
-              //     transcriptId: `${fields[7]}_${fields[0]}_${fields[1]}_${fields[2]}`,
-              //   });
-              // });
               break;
             }
           }
