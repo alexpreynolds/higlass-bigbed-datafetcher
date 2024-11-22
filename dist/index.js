@@ -2494,632 +2494,6 @@ var require_slugid2 = __commonJS({
   }
 });
 
-// node_modules/abortcontroller-polyfill/dist/cjs-ponyfill.js
-var require_cjs_ponyfill = __commonJS({
-  "node_modules/abortcontroller-polyfill/dist/cjs-ponyfill.js"(exports) {
-    "use strict";
-    init_virtual_process_polyfill();
-    init_buffer();
-    Object.defineProperty(exports, "__esModule", { value: true });
-    function _classCallCheck(instance, Constructor) {
-      if (!(instance instanceof Constructor)) {
-        throw new TypeError("Cannot call a class as a function");
-      }
-    }
-    function _defineProperties(target, props) {
-      for (var i = 0; i < props.length; i++) {
-        var descriptor = props[i];
-        descriptor.enumerable = descriptor.enumerable || false;
-        descriptor.configurable = true;
-        if ("value" in descriptor)
-          descriptor.writable = true;
-        Object.defineProperty(target, descriptor.key, descriptor);
-      }
-    }
-    function _createClass(Constructor, protoProps, staticProps) {
-      if (protoProps)
-        _defineProperties(Constructor.prototype, protoProps);
-      if (staticProps)
-        _defineProperties(Constructor, staticProps);
-      Object.defineProperty(Constructor, "prototype", {
-        writable: false
-      });
-      return Constructor;
-    }
-    function _inherits(subClass, superClass) {
-      if (typeof superClass !== "function" && superClass !== null) {
-        throw new TypeError("Super expression must either be null or a function");
-      }
-      subClass.prototype = Object.create(superClass && superClass.prototype, {
-        constructor: {
-          value: subClass,
-          writable: true,
-          configurable: true
-        }
-      });
-      Object.defineProperty(subClass, "prototype", {
-        writable: false
-      });
-      if (superClass)
-        _setPrototypeOf(subClass, superClass);
-    }
-    function _getPrototypeOf(o) {
-      _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf2(o2) {
-        return o2.__proto__ || Object.getPrototypeOf(o2);
-      };
-      return _getPrototypeOf(o);
-    }
-    function _setPrototypeOf(o, p) {
-      _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf2(o2, p2) {
-        o2.__proto__ = p2;
-        return o2;
-      };
-      return _setPrototypeOf(o, p);
-    }
-    function _isNativeReflectConstruct() {
-      if (typeof Reflect === "undefined" || !Reflect.construct)
-        return false;
-      if (Reflect.construct.sham)
-        return false;
-      if (typeof Proxy === "function")
-        return true;
-      try {
-        Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function() {
-        }));
-        return true;
-      } catch (e) {
-        return false;
-      }
-    }
-    function _assertThisInitialized(self2) {
-      if (self2 === void 0) {
-        throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-      }
-      return self2;
-    }
-    function _possibleConstructorReturn(self2, call) {
-      if (call && (typeof call === "object" || typeof call === "function")) {
-        return call;
-      } else if (call !== void 0) {
-        throw new TypeError("Derived constructors may only return object or undefined");
-      }
-      return _assertThisInitialized(self2);
-    }
-    function _createSuper(Derived) {
-      var hasNativeReflectConstruct = _isNativeReflectConstruct();
-      return function _createSuperInternal() {
-        var Super = _getPrototypeOf(Derived), result;
-        if (hasNativeReflectConstruct) {
-          var NewTarget = _getPrototypeOf(this).constructor;
-          result = Reflect.construct(Super, arguments, NewTarget);
-        } else {
-          result = Super.apply(this, arguments);
-        }
-        return _possibleConstructorReturn(this, result);
-      };
-    }
-    function _superPropBase(object, property) {
-      while (!Object.prototype.hasOwnProperty.call(object, property)) {
-        object = _getPrototypeOf(object);
-        if (object === null)
-          break;
-      }
-      return object;
-    }
-    function _get() {
-      if (typeof Reflect !== "undefined" && Reflect.get) {
-        _get = Reflect.get.bind();
-      } else {
-        _get = function _get2(target, property, receiver) {
-          var base = _superPropBase(target, property);
-          if (!base)
-            return;
-          var desc = Object.getOwnPropertyDescriptor(base, property);
-          if (desc.get) {
-            return desc.get.call(arguments.length < 3 ? target : receiver);
-          }
-          return desc.value;
-        };
-      }
-      return _get.apply(this, arguments);
-    }
-    var Emitter = /* @__PURE__ */ function() {
-      function Emitter2() {
-        _classCallCheck(this, Emitter2);
-        Object.defineProperty(this, "listeners", {
-          value: {},
-          writable: true,
-          configurable: true
-        });
-      }
-      _createClass(Emitter2, [{
-        key: "addEventListener",
-        value: function addEventListener(type, callback, options) {
-          if (!(type in this.listeners)) {
-            this.listeners[type] = [];
-          }
-          this.listeners[type].push({
-            callback,
-            options
-          });
-        }
-      }, {
-        key: "removeEventListener",
-        value: function removeEventListener(type, callback) {
-          if (!(type in this.listeners)) {
-            return;
-          }
-          var stack = this.listeners[type];
-          for (var i = 0, l = stack.length; i < l; i++) {
-            if (stack[i].callback === callback) {
-              stack.splice(i, 1);
-              return;
-            }
-          }
-        }
-      }, {
-        key: "dispatchEvent",
-        value: function dispatchEvent(event) {
-          if (!(event.type in this.listeners)) {
-            return;
-          }
-          var stack = this.listeners[event.type];
-          var stackToCall = stack.slice();
-          for (var i = 0, l = stackToCall.length; i < l; i++) {
-            var listener = stackToCall[i];
-            try {
-              listener.callback.call(this, event);
-            } catch (e) {
-              Promise.resolve().then(function() {
-                throw e;
-              });
-            }
-            if (listener.options && listener.options.once) {
-              this.removeEventListener(event.type, listener.callback);
-            }
-          }
-          return !event.defaultPrevented;
-        }
-      }]);
-      return Emitter2;
-    }();
-    var AbortSignal = /* @__PURE__ */ function(_Emitter) {
-      _inherits(AbortSignal2, _Emitter);
-      var _super = _createSuper(AbortSignal2);
-      function AbortSignal2() {
-        var _this;
-        _classCallCheck(this, AbortSignal2);
-        _this = _super.call(this);
-        if (!_this.listeners) {
-          Emitter.call(_assertThisInitialized(_this));
-        }
-        Object.defineProperty(_assertThisInitialized(_this), "aborted", {
-          value: false,
-          writable: true,
-          configurable: true
-        });
-        Object.defineProperty(_assertThisInitialized(_this), "onabort", {
-          value: null,
-          writable: true,
-          configurable: true
-        });
-        Object.defineProperty(_assertThisInitialized(_this), "reason", {
-          value: void 0,
-          writable: true,
-          configurable: true
-        });
-        return _this;
-      }
-      _createClass(AbortSignal2, [{
-        key: "toString",
-        value: function toString6() {
-          return "[object AbortSignal]";
-        }
-      }, {
-        key: "dispatchEvent",
-        value: function dispatchEvent(event) {
-          if (event.type === "abort") {
-            this.aborted = true;
-            if (typeof this.onabort === "function") {
-              this.onabort.call(this, event);
-            }
-          }
-          _get(_getPrototypeOf(AbortSignal2.prototype), "dispatchEvent", this).call(this, event);
-        }
-      }]);
-      return AbortSignal2;
-    }(Emitter);
-    var AbortController = /* @__PURE__ */ function() {
-      function AbortController2() {
-        _classCallCheck(this, AbortController2);
-        Object.defineProperty(this, "signal", {
-          value: new AbortSignal(),
-          writable: true,
-          configurable: true
-        });
-      }
-      _createClass(AbortController2, [{
-        key: "abort",
-        value: function abort(reason) {
-          var event;
-          try {
-            event = new Event("abort");
-          } catch (e) {
-            if (typeof document !== "undefined") {
-              if (!document.createEvent) {
-                event = document.createEventObject();
-                event.type = "abort";
-              } else {
-                event = document.createEvent("Event");
-                event.initEvent("abort", false, false);
-              }
-            } else {
-              event = {
-                type: "abort",
-                bubbles: false,
-                cancelable: false
-              };
-            }
-          }
-          var signalReason = reason;
-          if (signalReason === void 0) {
-            if (typeof document === "undefined") {
-              signalReason = new Error("This operation was aborted");
-              signalReason.name = "AbortError";
-            } else {
-              try {
-                signalReason = new DOMException("signal is aborted without reason");
-              } catch (err2) {
-                signalReason = new Error("This operation was aborted");
-                signalReason.name = "AbortError";
-              }
-            }
-          }
-          this.signal.reason = signalReason;
-          this.signal.dispatchEvent(event);
-        }
-      }, {
-        key: "toString",
-        value: function toString6() {
-          return "[object AbortController]";
-        }
-      }]);
-      return AbortController2;
-    }();
-    if (typeof Symbol !== "undefined" && Symbol.toStringTag) {
-      AbortController.prototype[Symbol.toStringTag] = "AbortController";
-      AbortSignal.prototype[Symbol.toStringTag] = "AbortSignal";
-    }
-    function polyfillNeeded(self2) {
-      if (self2.__FORCE_INSTALL_ABORTCONTROLLER_POLYFILL) {
-        console.log("__FORCE_INSTALL_ABORTCONTROLLER_POLYFILL=true is set, will force install polyfill");
-        return true;
-      }
-      return typeof self2.Request === "function" && !self2.Request.prototype.hasOwnProperty("signal") || !self2.AbortController;
-    }
-    function abortableFetchDecorator(patchTargets) {
-      if ("function" === typeof patchTargets) {
-        patchTargets = {
-          fetch: patchTargets
-        };
-      }
-      var _patchTargets = patchTargets, fetch = _patchTargets.fetch, _patchTargets$Request = _patchTargets.Request, NativeRequest = _patchTargets$Request === void 0 ? fetch.Request : _patchTargets$Request, NativeAbortController = _patchTargets.AbortController, _patchTargets$__FORCE = _patchTargets.__FORCE_INSTALL_ABORTCONTROLLER_POLYFILL, __FORCE_INSTALL_ABORTCONTROLLER_POLYFILL = _patchTargets$__FORCE === void 0 ? false : _patchTargets$__FORCE;
-      if (!polyfillNeeded({
-        fetch,
-        Request: NativeRequest,
-        AbortController: NativeAbortController,
-        __FORCE_INSTALL_ABORTCONTROLLER_POLYFILL
-      })) {
-        return {
-          fetch,
-          Request
-        };
-      }
-      var Request = NativeRequest;
-      if (Request && !Request.prototype.hasOwnProperty("signal") || __FORCE_INSTALL_ABORTCONTROLLER_POLYFILL) {
-        Request = function Request2(input, init3) {
-          var signal;
-          if (init3 && init3.signal) {
-            signal = init3.signal;
-            delete init3.signal;
-          }
-          var request = new NativeRequest(input, init3);
-          if (signal) {
-            Object.defineProperty(request, "signal", {
-              writable: false,
-              enumerable: false,
-              configurable: true,
-              value: signal
-            });
-          }
-          return request;
-        };
-        Request.prototype = NativeRequest.prototype;
-      }
-      var realFetch = fetch;
-      var abortableFetch = function abortableFetch2(input, init3) {
-        var signal = Request && Request.prototype.isPrototypeOf(input) ? input.signal : init3 ? init3.signal : void 0;
-        if (signal) {
-          var abortError;
-          try {
-            abortError = new DOMException("Aborted", "AbortError");
-          } catch (err2) {
-            abortError = new Error("Aborted");
-            abortError.name = "AbortError";
-          }
-          if (signal.aborted) {
-            return Promise.reject(abortError);
-          }
-          var cancellation = new Promise(function(_, reject) {
-            signal.addEventListener("abort", function() {
-              return reject(abortError);
-            }, {
-              once: true
-            });
-          });
-          if (init3 && init3.signal) {
-            delete init3.signal;
-          }
-          return Promise.race([cancellation, realFetch(input, init3)]);
-        }
-        return realFetch(input, init3);
-      };
-      return {
-        fetch: abortableFetch,
-        Request
-      };
-    }
-    exports.AbortController = AbortController;
-    exports.AbortSignal = AbortSignal;
-    exports.abortableFetch = abortableFetchDecorator;
-  }
-});
-
-// node_modules/abortable-promise-cache/esm/abortcontroller-ponyfill.js
-var require_abortcontroller_ponyfill = __commonJS({
-  "node_modules/abortable-promise-cache/esm/abortcontroller-ponyfill.js"(exports) {
-    "use strict";
-    init_virtual_process_polyfill();
-    init_buffer();
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.AbortSignal = exports.AbortController = void 0;
-    var cjs_ponyfill_1 = require_cjs_ponyfill();
-    var getGlobal = function() {
-      if (typeof self !== "undefined") {
-        return self;
-      }
-      if (typeof window !== "undefined") {
-        return window;
-      }
-      if (typeof globalThis !== "undefined") {
-        return globalThis;
-      }
-      throw new Error("unable to locate global object");
-    };
-    var AbortController = typeof getGlobal().AbortController === "undefined" ? cjs_ponyfill_1.AbortController : getGlobal().AbortController;
-    exports.AbortController = AbortController;
-    var AbortSignal = typeof getGlobal().AbortController === "undefined" ? cjs_ponyfill_1.AbortSignal : getGlobal().AbortSignal;
-    exports.AbortSignal = AbortSignal;
-  }
-});
-
-// node_modules/abortable-promise-cache/esm/AggregateAbortController.js
-var require_AggregateAbortController = __commonJS({
-  "node_modules/abortable-promise-cache/esm/AggregateAbortController.js"(exports) {
-    "use strict";
-    init_virtual_process_polyfill();
-    init_buffer();
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var abortcontroller_ponyfill_1 = require_abortcontroller_ponyfill();
-    var NullSignal = class {
-    };
-    var AggregateAbortController = class {
-      constructor() {
-        this.signals = /* @__PURE__ */ new Set();
-        this.abortController = new abortcontroller_ponyfill_1.AbortController();
-      }
-      addSignal(signal = new NullSignal()) {
-        if (this.signal.aborted) {
-          throw new Error("cannot add a signal, already aborted!");
-        }
-        this.signals.add(signal);
-        if (signal.aborted) {
-          this.handleAborted(signal);
-        } else if (typeof signal.addEventListener === "function") {
-          signal.addEventListener("abort", () => {
-            this.handleAborted(signal);
-          });
-        }
-      }
-      handleAborted(signal) {
-        this.signals.delete(signal);
-        if (this.signals.size === 0) {
-          this.abortController.abort();
-        }
-      }
-      get signal() {
-        return this.abortController.signal;
-      }
-      abort() {
-        this.abortController.abort();
-      }
-    };
-    exports.default = AggregateAbortController;
-  }
-});
-
-// node_modules/abortable-promise-cache/esm/AggregateStatusReporter.js
-var require_AggregateStatusReporter = __commonJS({
-  "node_modules/abortable-promise-cache/esm/AggregateStatusReporter.js"(exports) {
-    "use strict";
-    init_virtual_process_polyfill();
-    init_buffer();
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var AggregateStatusReporter = class {
-      constructor() {
-        this.callbacks = /* @__PURE__ */ new Set();
-      }
-      addCallback(callback = () => {
-      }) {
-        this.callbacks.add(callback);
-        callback(this.currentMessage);
-      }
-      callback(message) {
-        this.currentMessage = message;
-        this.callbacks.forEach((elt) => {
-          elt(message);
-        });
-      }
-    };
-    exports.default = AggregateStatusReporter;
-  }
-});
-
-// node_modules/abortable-promise-cache/esm/AbortablePromiseCache.js
-var require_AbortablePromiseCache = __commonJS({
-  "node_modules/abortable-promise-cache/esm/AbortablePromiseCache.js"(exports) {
-    "use strict";
-    init_virtual_process_polyfill();
-    init_buffer();
-    var __importDefault = exports && exports.__importDefault || function(mod) {
-      return mod && mod.__esModule ? mod : { "default": mod };
-    };
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var abortcontroller_ponyfill_1 = require_abortcontroller_ponyfill();
-    var AggregateAbortController_1 = __importDefault(require_AggregateAbortController());
-    var AggregateStatusReporter_1 = __importDefault(require_AggregateStatusReporter());
-    var AbortablePromiseCache3 = class {
-      constructor({ fill: fill3, cache }) {
-        if (typeof fill3 !== "function") {
-          throw new TypeError("must pass a fill function");
-        }
-        if (typeof cache !== "object") {
-          throw new TypeError("must pass a cache object");
-        }
-        if (typeof cache.get !== "function" || typeof cache.set !== "function" || typeof cache.delete !== "function") {
-          throw new TypeError("cache must implement get(key), set(key, val), and and delete(key)");
-        }
-        this.cache = cache;
-        this.fillCallback = fill3;
-      }
-      static isAbortException(exception) {
-        return exception.name === "AbortError" || exception.code === "ERR_ABORTED" || exception.message === "AbortError: aborted" || exception.message === "Error: aborted";
-      }
-      evict(key, entry) {
-        if (this.cache.get(key) === entry) {
-          this.cache.delete(key);
-        }
-      }
-      fill(key, data, signal, statusCallback) {
-        const aborter = new AggregateAbortController_1.default();
-        const statusReporter = new AggregateStatusReporter_1.default();
-        statusReporter.addCallback(statusCallback);
-        const newEntry = {
-          aborter,
-          promise: this.fillCallback(data, aborter.signal, (message) => {
-            statusReporter.callback(message);
-          }),
-          settled: false,
-          statusReporter,
-          get aborted() {
-            return this.aborter.signal.aborted;
-          }
-        };
-        newEntry.aborter.addSignal(signal);
-        newEntry.aborter.signal.addEventListener("abort", () => {
-          if (!newEntry.settled) {
-            this.evict(key, newEntry);
-          }
-        });
-        newEntry.promise.then(() => {
-          newEntry.settled = true;
-        }, () => {
-          newEntry.settled = true;
-          this.evict(key, newEntry);
-        }).catch((e) => {
-          console.error(e);
-          throw e;
-        });
-        this.cache.set(key, newEntry);
-      }
-      static checkSinglePromise(promise, signal) {
-        function checkForSingleAbort() {
-          if (signal && signal.aborted) {
-            throw Object.assign(new Error("aborted"), { code: "ERR_ABORTED" });
-          }
-        }
-        return promise.then((result) => {
-          checkForSingleAbort();
-          return result;
-        }, (error) => {
-          checkForSingleAbort();
-          throw error;
-        });
-      }
-      has(key) {
-        return this.cache.has(key);
-      }
-      get(key, data, signal, statusCallback) {
-        if (!signal && data instanceof abortcontroller_ponyfill_1.AbortSignal) {
-          throw new TypeError("second get argument appears to be an AbortSignal, perhaps you meant to pass `null` for the fill data?");
-        }
-        const cacheEntry = this.cache.get(key);
-        if (cacheEntry) {
-          if (cacheEntry.aborted && !cacheEntry.settled) {
-            this.evict(key, cacheEntry);
-            return this.get(key, data, signal, statusCallback);
-          }
-          if (cacheEntry.settled) {
-            return cacheEntry.promise;
-          }
-          cacheEntry.aborter.addSignal(signal);
-          cacheEntry.statusReporter.addCallback(statusCallback);
-          return AbortablePromiseCache3.checkSinglePromise(cacheEntry.promise, signal);
-        }
-        this.fill(key, data, signal, statusCallback);
-        return AbortablePromiseCache3.checkSinglePromise(
-          this.cache.get(key).promise,
-          signal
-        );
-      }
-      delete(key) {
-        const cachedEntry = this.cache.get(key);
-        if (cachedEntry) {
-          if (!cachedEntry.settled) {
-            cachedEntry.aborter.abort();
-          }
-          this.cache.delete(key);
-        }
-      }
-      clear() {
-        const keyIter = this.cache.keys();
-        let deleteCount = 0;
-        for (let result = keyIter.next(); !result.done; result = keyIter.next()) {
-          this.delete(result.value);
-          deleteCount += 1;
-        }
-        return deleteCount;
-      }
-    };
-    exports.default = AbortablePromiseCache3;
-  }
-});
-
-// node_modules/abortable-promise-cache/esm/index.js
-var require_esm = __commonJS({
-  "node_modules/abortable-promise-cache/esm/index.js"(exports) {
-    "use strict";
-    init_virtual_process_polyfill();
-    init_buffer();
-    var __importDefault = exports && exports.__importDefault || function(mod) {
-      return mod && mod.__esModule ? mod : { "default": mod };
-    };
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var AbortablePromiseCache_1 = __importDefault(require_AbortablePromiseCache());
-    exports.default = AbortablePromiseCache_1.default;
-  }
-});
-
 // node_modules/quick-lru/index.js
 var require_quick_lru = __commonJS({
   "node_modules/quick-lru/index.js"(exports, module) {
@@ -3227,121 +2601,6 @@ var require_localFile = __commonJS({
   "(disabled):node_modules/generic-filehandle/esm/localFile"() {
     init_virtual_process_polyfill();
     init_buffer();
-  }
-});
-
-// (disabled):node_modules/apr144-generic-filehandle/esm/localFile
-var require_localFile2 = __commonJS({
-  "(disabled):node_modules/apr144-generic-filehandle/esm/localFile"() {
-    init_virtual_process_polyfill();
-    init_buffer();
-  }
-});
-
-// node_modules/base-64/base64.js
-var require_base64 = __commonJS({
-  "node_modules/base-64/base64.js"(exports, module) {
-    init_virtual_process_polyfill();
-    init_buffer();
-    (function(root) {
-      var freeExports = typeof exports == "object" && exports;
-      var freeModule = typeof module == "object" && module && module.exports == freeExports && module;
-      var freeGlobal = typeof globalThis == "object" && globalThis;
-      if (freeGlobal.global === freeGlobal || freeGlobal.window === freeGlobal) {
-        root = freeGlobal;
-      }
-      var InvalidCharacterError = function(message) {
-        this.message = message;
-      };
-      InvalidCharacterError.prototype = new Error();
-      InvalidCharacterError.prototype.name = "InvalidCharacterError";
-      var error = function(message) {
-        throw new InvalidCharacterError(message);
-      };
-      var TABLE2 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-      var REGEX_SPACE_CHARACTERS = /[\t\n\f\r ]/g;
-      var decode = function(input) {
-        input = String(input).replace(REGEX_SPACE_CHARACTERS, "");
-        var length = input.length;
-        if (length % 4 == 0) {
-          input = input.replace(/==?$/, "");
-          length = input.length;
-        }
-        if (length % 4 == 1 || /[^+a-zA-Z0-9/]/.test(input)) {
-          error(
-            "Invalid character: the string to be decoded is not correctly encoded."
-          );
-        }
-        var bitCounter = 0;
-        var bitStorage;
-        var buffer;
-        var output = "";
-        var position = -1;
-        while (++position < length) {
-          buffer = TABLE2.indexOf(input.charAt(position));
-          bitStorage = bitCounter % 4 ? bitStorage * 64 + buffer : buffer;
-          if (bitCounter++ % 4) {
-            output += String.fromCharCode(
-              255 & bitStorage >> (-2 * bitCounter & 6)
-            );
-          }
-        }
-        return output;
-      };
-      var encode2 = function(input) {
-        input = String(input);
-        if (/[^\0-\xFF]/.test(input)) {
-          error(
-            "The string to be encoded contains characters outside of the Latin1 range."
-          );
-        }
-        var padding = input.length % 3;
-        var output = "";
-        var position = -1;
-        var a;
-        var b;
-        var c;
-        var buffer;
-        var length = input.length - padding;
-        while (++position < length) {
-          a = input.charCodeAt(position) << 16;
-          b = input.charCodeAt(++position) << 8;
-          c = input.charCodeAt(++position);
-          buffer = a + b + c;
-          output += TABLE2.charAt(buffer >> 18 & 63) + TABLE2.charAt(buffer >> 12 & 63) + TABLE2.charAt(buffer >> 6 & 63) + TABLE2.charAt(buffer & 63);
-        }
-        if (padding == 2) {
-          a = input.charCodeAt(position) << 8;
-          b = input.charCodeAt(++position);
-          buffer = a + b;
-          output += TABLE2.charAt(buffer >> 10) + TABLE2.charAt(buffer >> 4 & 63) + TABLE2.charAt(buffer << 2 & 63) + "=";
-        } else if (padding == 1) {
-          buffer = input.charCodeAt(position);
-          output += TABLE2.charAt(buffer >> 2) + TABLE2.charAt(buffer << 4 & 63) + "==";
-        }
-        return output;
-      };
-      var base64 = {
-        "encode": encode2,
-        "decode": decode,
-        "version": "1.0.0"
-      };
-      if (typeof define == "function" && typeof define.amd == "object" && define.amd) {
-        define(function() {
-          return base64;
-        });
-      } else if (freeExports && !freeExports.nodeType) {
-        if (freeModule) {
-          freeModule.exports = base64;
-        } else {
-          for (var key in base64) {
-            base64.hasOwnProperty(key) && (freeExports[key] = base64[key]);
-          }
-        }
-      } else {
-        root.base64 = base64;
-      }
-    })(exports);
   }
 });
 
@@ -6141,8 +5400,187 @@ var Parser = class {
   }
 };
 
+// node_modules/@gmod/abortable-promise-cache/esm/index.js
+init_virtual_process_polyfill();
+init_buffer();
+
+// node_modules/@gmod/abortable-promise-cache/esm/AbortablePromiseCache.js
+init_virtual_process_polyfill();
+init_buffer();
+
+// node_modules/@gmod/abortable-promise-cache/esm/AggregateAbortController.js
+init_virtual_process_polyfill();
+init_buffer();
+var NullSignal = class {
+};
+var AggregateAbortController = class {
+  constructor() {
+    this.signals = /* @__PURE__ */ new Set();
+    this.abortController = new AbortController();
+  }
+  addSignal(signal = new NullSignal()) {
+    if (this.signal.aborted) {
+      throw new Error("cannot add a signal, already aborted!");
+    }
+    this.signals.add(signal);
+    if (signal.aborted) {
+      this.handleAborted(signal);
+    } else if (typeof signal.addEventListener === "function") {
+      signal.addEventListener("abort", () => {
+        this.handleAborted(signal);
+      });
+    }
+  }
+  handleAborted(signal) {
+    this.signals.delete(signal);
+    if (this.signals.size === 0) {
+      this.abortController.abort();
+    }
+  }
+  get signal() {
+    return this.abortController.signal;
+  }
+  abort() {
+    this.abortController.abort();
+  }
+};
+
+// node_modules/@gmod/abortable-promise-cache/esm/AggregateStatusReporter.js
+init_virtual_process_polyfill();
+init_buffer();
+var AggregateStatusReporter = class {
+  constructor() {
+    this.callbacks = /* @__PURE__ */ new Set();
+  }
+  addCallback(callback = () => {
+  }) {
+    this.callbacks.add(callback);
+    callback(this.currentMessage);
+  }
+  callback(message) {
+    this.currentMessage = message;
+    for (const elt of this.callbacks) {
+      elt(message);
+    }
+  }
+};
+
+// node_modules/@gmod/abortable-promise-cache/esm/AbortablePromiseCache.js
+var AbortablePromiseCache = class {
+  constructor({ fill: fill3, cache }) {
+    if (typeof fill3 !== "function") {
+      throw new TypeError("must pass a fill function");
+    }
+    if (typeof cache !== "object") {
+      throw new TypeError("must pass a cache object");
+    }
+    if (typeof cache.get !== "function" || typeof cache.set !== "function" || typeof cache.delete !== "function") {
+      throw new TypeError("cache must implement get(key), set(key, val), and and delete(key)");
+    }
+    this.cache = cache;
+    this.fillCallback = fill3;
+  }
+  static isAbortException(exception) {
+    return exception.name === "AbortError" || exception.code === "ERR_ABORTED" || exception.message === "AbortError: aborted" || exception.message === "Error: aborted";
+  }
+  evict(key, entry) {
+    if (this.cache.get(key) === entry) {
+      this.cache.delete(key);
+    }
+  }
+  fill(key, data, signal, statusCallback) {
+    const aborter = new AggregateAbortController();
+    const statusReporter = new AggregateStatusReporter();
+    statusReporter.addCallback(statusCallback);
+    const newEntry = {
+      aborter,
+      promise: this.fillCallback(data, aborter.signal, (message) => {
+        statusReporter.callback(message);
+      }),
+      settled: false,
+      statusReporter,
+      get aborted() {
+        return this.aborter.signal.aborted;
+      }
+    };
+    newEntry.aborter.addSignal(signal);
+    newEntry.aborter.signal.addEventListener("abort", () => {
+      if (!newEntry.settled) {
+        this.evict(key, newEntry);
+      }
+    });
+    newEntry.promise.then(() => {
+      newEntry.settled = true;
+    }, () => {
+      newEntry.settled = true;
+      this.evict(key, newEntry);
+    }).catch((error) => {
+      console.error(error);
+      throw error;
+    });
+    this.cache.set(key, newEntry);
+  }
+  static checkSinglePromise(promise, signal) {
+    function checkForSingleAbort() {
+      if (signal === null || signal === void 0 ? void 0 : signal.aborted) {
+        throw Object.assign(new Error("aborted"), { code: "ERR_ABORTED" });
+      }
+    }
+    return promise.then((result) => {
+      checkForSingleAbort();
+      return result;
+    }, (error) => {
+      checkForSingleAbort();
+      throw error;
+    });
+  }
+  has(key) {
+    return this.cache.has(key);
+  }
+  get(key, data, signal, statusCallback) {
+    if (!signal && data instanceof AbortSignal) {
+      throw new TypeError("second get argument appears to be an AbortSignal, perhaps you meant to pass `null` for the fill data?");
+    }
+    const cacheEntry = this.cache.get(key);
+    if (cacheEntry) {
+      if (cacheEntry.aborted && !cacheEntry.settled) {
+        this.evict(key, cacheEntry);
+        return this.get(key, data, signal, statusCallback);
+      }
+      if (cacheEntry.settled) {
+        return cacheEntry.promise;
+      }
+      cacheEntry.aborter.addSignal(signal);
+      cacheEntry.statusReporter.addCallback(statusCallback);
+      return AbortablePromiseCache.checkSinglePromise(cacheEntry.promise, signal);
+    }
+    this.fill(key, data, signal, statusCallback);
+    return AbortablePromiseCache.checkSinglePromise(
+      this.cache.get(key).promise,
+      signal
+    );
+  }
+  delete(key) {
+    const cachedEntry = this.cache.get(key);
+    if (cachedEntry) {
+      if (!cachedEntry.settled) {
+        cachedEntry.aborter.abort();
+      }
+      this.cache.delete(key);
+    }
+  }
+  clear() {
+    const keyIter = this.cache.keys();
+    let deleteCount = 0;
+    for (let result = keyIter.next(); !result.done; result = keyIter.next()) {
+      this.delete(result.value);
+      deleteCount += 1;
+    }
+    return deleteCount;
+  }
+};
+
 // node_modules/@gmod/bbi/esm/block-view.js
-var import_abortable_promise_cache = __toESM(require_esm());
 var import_quick_lru = __toESM(require_quick_lru());
 
 // node_modules/@gmod/bbi/esm/range.js
@@ -10391,7 +9829,7 @@ var BlockView = class {
     this.isBigEndian = isBigEndian;
     this.isCompressed = isCompressed;
     this.blockType = blockType;
-    this.featureCache = new import_abortable_promise_cache.default({
+    this.featureCache = new AbortablePromiseCache({
       cache: new import_quick_lru.default({ maxSize: 1e3 }),
       fill: async (requestData, signal) => {
         const len = Number(requestData.length);
@@ -10848,8 +10286,8 @@ function __generator(thisArg, body) {
     if (t[0] & 1)
       throw t[1];
     return t[1];
-  }, trys: [], ops: [] }, f2, y, t, g;
-  return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() {
+  }, trys: [], ops: [] }, f2, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
+  return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function() {
     return this;
   }), g;
   function verb(n) {
@@ -10972,7 +10410,7 @@ function __asyncGenerator(thisArg, _arguments, generator) {
   if (!Symbol.asyncIterator)
     throw new TypeError("Symbol.asyncIterator is not defined.");
   var g = generator.apply(thisArg, _arguments || []), i, q = [];
-  return i = {}, verb("next"), verb("throw"), verb("return", awaitReturn), i[Symbol.asyncIterator] = function() {
+  return i = Object.create((typeof AsyncIterator === "function" ? AsyncIterator : Object).prototype), verb("next"), verb("throw"), verb("return", awaitReturn), i[Symbol.asyncIterator] = function() {
     return this;
   }, i;
   function awaitReturn(f2) {
@@ -12534,7 +11972,6 @@ var BBI = class {
 // node_modules/@gmod/bbi/esm/bigbed.js
 init_virtual_process_polyfill();
 init_buffer();
-var import_abortable_promise_cache2 = __toESM(require_esm());
 var import_quick_lru2 = __toESM(require_quick_lru());
 function filterUndef(ts) {
   return ts.filter((t) => !!t);
@@ -12542,7 +11979,7 @@ function filterUndef(ts) {
 var BigBed = class extends BBI {
   constructor() {
     super(...arguments);
-    this.readIndicesCache = new import_abortable_promise_cache2.default({
+    this.readIndicesCache = new AbortablePromiseCache({
       cache: new import_quick_lru2.default({ maxSize: 1 }),
       fill: (args, signal) => this._readIndices({ ...args, signal })
     });
@@ -12648,169 +12085,6 @@ var BigBed = class extends BBI {
     });
   }
 };
-
-// node_modules/apr144-generic-filehandle/esm/index.js
-init_virtual_process_polyfill();
-init_buffer();
-var import_localFile3 = __toESM(require_localFile2());
-
-// node_modules/apr144-generic-filehandle/esm/remoteFile.js
-init_virtual_process_polyfill();
-init_buffer();
-var import_base_64 = __toESM(require_base64());
-var RemoteFile2 = class {
-  async getBufferFromResponse(response) {
-    if (typeof response.buffer === "function") {
-      return response.buffer();
-    } else if (typeof response.arrayBuffer === "function") {
-      const resp = await response.arrayBuffer();
-      return Buffer3.from(resp);
-    } else {
-      throw new TypeError("invalid HTTP response object, has no buffer method, and no arrayBuffer method");
-    }
-  }
-  constructor(source, opts = {}) {
-    this.auth = {};
-    this.baseOverrides = {};
-    this.url = source;
-    this.auth = opts.auth || {};
-    const fetch = opts.fetch || globalThis.fetch.bind(globalThis);
-    if (!fetch) {
-      throw new TypeError(`no fetch function supplied, and none found in global environment`);
-    }
-    if (opts.overrides) {
-      this.baseOverrides = opts.overrides;
-    }
-    this.fetchImplementation = fetch;
-  }
-  async fetch(input, init3) {
-    let response;
-    try {
-      response = await this.fetchImplementation(input, init3);
-    } catch (e) {
-      if (`${e}`.includes("Failed to fetch")) {
-        console.warn(`generic-filehandle: refetching ${input} to attempt to work around chrome CORS header caching bug`);
-        response = await this.fetchImplementation(input, {
-          ...init3,
-          cache: "reload"
-        });
-      } else {
-        throw e;
-      }
-    }
-    return response;
-  }
-  async read(buffer, offset = 0, length, position = 0, opts = {}) {
-    const { headers = {}, signal, overrides = {} } = opts;
-    if (length < Infinity) {
-      headers.range = `bytes=${position}-${position + length}`;
-    } else if (length === Infinity && position !== 0) {
-      headers.range = `bytes=${position}-`;
-    }
-    if (this.auth && this.auth.user && this.auth.password) {
-      headers.Authorization = `Basic ${(0, import_base_64.encode)(this.auth.user + ":" + this.auth.password)}`;
-    }
-    const args = {
-      ...this.baseOverrides,
-      ...overrides,
-      headers: {
-        ...headers,
-        ...overrides.headers,
-        ...this.baseOverrides.headers
-      },
-      method: "GET",
-      redirect: "follow",
-      mode: "cors",
-      signal
-    };
-    const response = await this.fetch(this.url, args);
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status} ${response.statusText} ${this.url}`);
-    }
-    if (response.status === 200 && position === 0 || response.status === 206) {
-      const responseData = await this.getBufferFromResponse(response);
-      const bytesCopied = responseData.copy(buffer, offset, 0, Math.min(length, responseData.length));
-      const res = response.headers.get("content-range");
-      const sizeMatch = /\/(\d+)$/.exec(res || "");
-      if (sizeMatch && sizeMatch[1]) {
-        this._stat = { size: parseInt(sizeMatch[1], 10) };
-      }
-      return { bytesRead: bytesCopied, buffer };
-    }
-    if (response.status === 200) {
-      throw new Error("${this.url} fetch returned status 200, expected 206");
-    }
-    if (response.status === 404) {
-      return { bytesRead: 0, buffer };
-    }
-    throw new Error(`HTTP ${response.status} fetching ${this.url}`);
-  }
-  async readFile(options = {}) {
-    let encoding;
-    let opts;
-    if (typeof options === "string") {
-      encoding = options;
-      opts = {};
-    } else {
-      encoding = options.encoding;
-      opts = options;
-      delete opts.encoding;
-    }
-    const { headers = {}, signal, overrides = {} } = opts;
-    if (this.auth && this.auth.user && this.auth.password) {
-      headers.Authorization = `Basic ${(0, import_base_64.encode)(this.auth.user + ":" + this.auth.password)}`;
-    }
-    const args = {
-      headers,
-      method: "GET",
-      redirect: "follow",
-      mode: "cors",
-      signal,
-      ...this.baseOverrides,
-      ...overrides
-    };
-    const response = await this.fetch(this.url, args);
-    if (!response) {
-      throw new Error("generic-filehandle failed to fetch");
-    }
-    if (response.status === 404) {
-      return Buffer3.alloc(1);
-    }
-    if (response.status !== 200) {
-      throw Object.assign(new Error(`HTTP ${response.status} fetching ${this.url}`), {
-        status: response.status
-      });
-    }
-    if (encoding === "utf8") {
-      return response.text();
-    }
-    if (encoding) {
-      throw new Error(`unsupported encoding: ${encoding}`);
-    }
-    return this.getBufferFromResponse(response);
-  }
-  async stat() {
-    if (!this._stat) {
-      const buf = Buffer3.allocUnsafe(10);
-      await this.read(buf, 0, 10, 0);
-      if (!this._stat) {
-        throw new Error(`unable to determine size of file at ${this.url}`);
-      }
-    }
-    return this._stat;
-  }
-  async close() {
-    return;
-  }
-};
-
-// node_modules/apr144-generic-filehandle/esm/blobFile.js
-init_virtual_process_polyfill();
-init_buffer();
-
-// node_modules/apr144-generic-filehandle/esm/filehandle.js
-init_virtual_process_polyfill();
-init_buffer();
 
 // node_modules/d3-dsv/src/index.js
 init_virtual_process_polyfill();
@@ -13670,7 +12944,7 @@ var BigBedDataFetcher = function BigBedDataFetcher2(HGC, ...args) {
     async loadBigBed(dataConfig) {
       if (dataConfig.url) {
         this.bigBedFile = new BigBed({
-          filehandle: new RemoteFile2(dataConfig.url)
+          filehandle: new RemoteFile(dataConfig.url)
         });
         return this.bigBedFile;
       } else {
@@ -13812,6 +13086,5 @@ export {
  * @author   Feross Aboukhadijeh <feross@feross.org> <http://feross.org>
  * @license  MIT
  */
-/*! https://mths.be/base64 v1.0.0 by @mathias | MIT license */
 /*! pako 2.1.0 https://github.com/nodeca/pako @license (MIT AND Zlib) */
 //# sourceMappingURL=index.js.map
