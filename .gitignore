@@ -29,3 +29,5 @@ app/test*.html
 es
 *.tgz
 package-lock.json
+dist/**
+dist.zip
