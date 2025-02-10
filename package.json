@@ -1,6 +1,6 @@
 {
   "name": "@apr144/higlass-bigbed-datafetcher",
-  "version": "0.1.0",
+  "version": "0.1.0-020925-001",
   "description": "BigBed Data Fetcher for HiGlass",
   "private": false,
   "author": "Alex Reynolds",
